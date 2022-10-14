@@ -1,3 +1,4 @@
+@echo off
 echo "Starting Development Server... (Windows)"
 echo "Installing Backend & Frontend Dependencies."
 cd backend/

@@ -1,16 +1,14 @@
 require("dotenv").config();
-const connection = require("./config/database");
-connection.connect();
 
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+let express = require("express");
+let path = require("path");
+let cookieParser = require("cookie-parser");
+let logger = require("morgan");
 
 let authRouter = require("./routes/auth");
-var usersRouter = require("./routes/users");
+let usersRouter = require("./routes/users");
 
-var app = express();
+let app = express();
 
 app.use(logger("dev"));
 app.use(express.json());

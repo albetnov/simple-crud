@@ -1,8 +1,8 @@
-var express = require('express');
+var express = require("express");
+const AuthenticationService = require("../service/AuthenticationService");
 var router = express.Router();
 
-router.get('/login', (req, res) => {
-    res.json({data: "Login you in."});
-})
+router.post("/login", AuthenticationService.login);
+router.post("/register", AuthenticationService.register);
 
 module.exports = router;
