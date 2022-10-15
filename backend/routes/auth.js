@@ -1,6 +1,6 @@
-var express = require("express");
-const AuthenticationService = require("../service/AuthenticationService");
-var router = express.Router();
+const express = require("express");
+const AuthenticationService = require("../services/AuthenticationService");
+const router = express.Router();
 
 router.post("/login", AuthenticationService.login);
 router.post("/register", AuthenticationService.register);

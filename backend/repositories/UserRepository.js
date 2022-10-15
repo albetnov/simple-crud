@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const { hashSync } = require("bcryptjs");
 
 const prisma = new PrismaClient();
 
@@ -7,6 +8,7 @@ const UserRepository = {
     return await prisma.users.findFirst({ where: { username } });
   },
   async create(data) {
+    data.password = hashSync(data.password);
     return await prisma.users.create({ data });
   },
 };

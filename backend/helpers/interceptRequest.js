@@ -1,10 +1,18 @@
 const interceptRequest = async (req, response, request) => {
+  const result = {
+    value: null,
+    hasError: false,
+    error: null,
+  };
+
   if ("unique" in request) {
     const unique = request.unique(req.body);
     for (key in unique) {
       const validate = await unique[key].validate(response);
       if (validate.hasError) {
-        return validate.throwErr();
+        result.hasError = true;
+        result.error = validate.throwErr();
+        break;
       }
     }
   }
@@ -14,12 +22,17 @@ const interceptRequest = async (req, response, request) => {
   }
 
   const { error, value } = request.rules().validate(req.body);
-  if (error) {
-    response.send({ message: "Validation Error", details: error.details });
-    console.error(error);
-    return false;
+
+  if (error && !result.hasError) {
+    result.error = response
+      .status(422)
+      .send({ message: "Validation Error", details: error.details });
+    result.hasError = true;
+  } else {
+    result.value = value;
   }
-  return value;
+
+  return result;
 };
 
 module.exports = interceptRequest;

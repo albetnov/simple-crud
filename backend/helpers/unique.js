@@ -7,14 +7,13 @@ class Unique {
   }
 
   async validate(response = null) {
-    console.log(this.response);
     let data = {
       hasError: false,
     };
 
     const find = await this.repository(this.fieldName);
 
-    if (find) {
+    if (find && this.fieldName) {
       const res = response ? response : this.response;
       data = {
         hasError: true,
