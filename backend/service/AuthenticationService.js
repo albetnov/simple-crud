@@ -1,5 +1,4 @@
-const unique = require("../helpers/unique");
-const validate = require("../helpers/validate");
+const interceptRequest = require("../helpers/interceptRequest");
 const UserRepository = require("../repositories/UserRepository");
 const LoginRequest = require("../requests/LoginRequest");
 const RegisterRequest = require("../requests/RegisterRequest");
@@ -7,18 +6,14 @@ const DataNotFound = require("../responses/DataNotFound");
 
 const AuthenticationService = {
   async login(req, res) {
-    const data = validate(req, res, LoginRequest);
+    const data = await interceptRequest(req, res, LoginRequest);
     const find = await UserRepository.findByUsername(data.username);
     if (!find) {
       return DataNotFound(res);
     }
   },
   async register(req, res) {
-    const data = validate(req, res, RegisterRequest);
-    const uniqueValidation = await unique(UserRepository.findByUsername, data.username);
-    if (uniqueValidation) {
-      return uniqueValidation.throwErr();
-    }
+    const data = await interceptRequest(req, res, RegisterRequest);
 
     delete data.confirm_password;
     await UserRepository.create(data);
