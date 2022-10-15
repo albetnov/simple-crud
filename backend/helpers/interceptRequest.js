@@ -1,3 +1,5 @@
+const Unique = require("./Unique");
+
 const interceptRequest = async (req, response, request) => {
   const result = {
     value: null,
@@ -6,7 +8,7 @@ const interceptRequest = async (req, response, request) => {
   };
 
   if ("unique" in request) {
-    const unique = request.unique(req.body);
+    const unique = await request.unique(req.body, req.params);
     for (key in unique) {
       const validate = await unique[key].validate(response);
       if (validate.hasError) {

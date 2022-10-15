@@ -11,6 +11,20 @@ const UserRepository = {
     data.password = hashSync(data.password);
     return await prisma.users.create({ data });
   },
+  async getAll() {
+    return await (
+      await prisma.users.findMany({ orderBy: { id: "desc" } })
+    ).map((item) => {
+      delete item.password;
+      return item;
+    });
+  },
+  async update(id, data) {
+    return await prisma.users.update({ where: { id: parseInt(id) }, data });
+  },
+  async delete(id) {
+    return await prisma.users.delete({ where: { id: parseInt(id) } });
+  },
 };
 
 module.exports = UserRepository;

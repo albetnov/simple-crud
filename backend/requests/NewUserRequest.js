@@ -3,7 +3,7 @@ const Joi = require("joi");
 const Unique = require("../helpers/Unique");
 const UserRepository = require("../repositories/UserRepository");
 
-class RegisterRequest {
+class NewUserRequest {
   static rules() {
     return Joi.object({
       name: Joi.string().required(),
@@ -21,4 +21,4 @@ class RegisterRequest {
   }
 }
 
-module.exports = RegisterRequest;
+module.exports = NewUserRequest;

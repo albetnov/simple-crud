@@ -3,7 +3,17 @@ class Unique {
     this.repository = repository;
     this.fieldName = fieldName;
     this.response = response;
+    this.intentional = false;
     this.validate = this.validate.bind(this);
+    this.skipSelf = this.skipSelf.bind(this);
+  }
+
+  async skipSelf(id) {
+    const find = await this.repository(this.fieldName);
+    if (parseInt(find.id) === parseInt(id)) {
+      this.intentional = true;
+    }
+    return this;
   }
 
   async validate(response = null) {
@@ -12,8 +22,8 @@ class Unique {
     };
 
     const find = await this.repository(this.fieldName);
-
-    if (find && this.fieldName) {
+    console.log(this.intentional);
+    if (!this.intentional && find && this.fieldName) {
       const res = response ? response : this.response;
       data = {
         hasError: true,
