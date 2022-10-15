@@ -8,8 +8,16 @@ class Route {
     return this;
   }
 
+  withoutInterceptor() {
+    this.interceptor = null;
+    return this;
+  }
+
   register(path, routeFile) {
-    this.app.use(path, this.interceptor, routeFile);
+    if (this.interceptor) {
+      this.app.use(path, this.interceptor, routeFile);
+    }
+    this.app.use(path, routeFile);
     return this;
   }
 }
