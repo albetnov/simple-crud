@@ -25,6 +25,9 @@ const UserRepository = {
   async delete(id) {
     return await prisma.users.delete({ where: { id: parseInt(id) } });
   },
+  async countAll() {
+    return await prisma.users.count();
+  },
 };
 
 module.exports = UserRepository;

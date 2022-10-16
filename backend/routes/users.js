@@ -6,6 +6,8 @@ router.get("/current", function (req, res, next) {
   return res.json(req.user);
 });
 
+router.put("/me", UserService.editSelf);
+
 router.get("/all", UserService.index);
 router.post("/create", UserService.create);
 router.put("/edit/:id", UserService.edit);

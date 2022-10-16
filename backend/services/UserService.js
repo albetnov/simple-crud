@@ -5,9 +5,10 @@ const NewUserRequest = require("../requests/NewUserRequest");
 
 const UserService = {
   async index(req, res) {
+    const data = req.query.count ? await UserRepository.countAll() : await UserRepository.getAll();
     return res.json({
       message: "Showing user data",
-      data: await UserRepository.getAll(),
+      data,
     });
   },
   async create(req, res) {
@@ -40,6 +41,16 @@ const UserService = {
     const { id } = req.params;
     await UserRepository.delete(id);
     return res.json({ message: "Data deleted successfully.", status: 200 });
+  },
+  async editSelf(req, res) {
+    const data = await interceptRequest(req, res, EditUserRequest);
+
+    if (data.hasError) {
+      return data.error;
+    }
+
+    await UserRepository.update(req.user.id, data.value);
+    return res.json({ message: "User updated successfully", status: 200 });
   },
 };
 

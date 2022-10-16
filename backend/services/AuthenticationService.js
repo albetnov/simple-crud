@@ -27,7 +27,12 @@ const AuthenticationService = {
 
     return res.json({
       message: "Authentication success",
-      token: makeToken({ username: find.username, name: find.name, roles: find.roles }),
+      token: makeToken({
+        id: find.id,
+        username: find.username,
+        name: find.name,
+        roles: find.roles,
+      }),
       expiresIn: date.setDate(date.getDate() + 7),
     });
   },

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www -e .js"
+    "start": "nodemon ./bin/www -e .js",
+    "prod": "node ./bin/www"
   },
   "dependencies": {
     "@prisma/client": "^4.4.0",
