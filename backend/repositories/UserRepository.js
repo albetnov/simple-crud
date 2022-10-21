@@ -7,6 +7,9 @@ const UserRepository = {
   async findByUsername(username) {
     return await prisma.users.findFirst({ where: { username } });
   },
+  async findById(id) {
+    return await prisma.users.findFirst({ where: { id } });
+  },
   async create(data) {
     data.password = hashSync(data.password);
     return await prisma.users.create({ data });

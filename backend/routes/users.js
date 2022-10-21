@@ -7,6 +7,7 @@ router.get("/current", function (req, res, next) {
 });
 
 router.put("/me", UserService.editSelf);
+router.delete("/me", UserService.deleteSelf);
 
 router.get("/all", UserService.index);
 router.post("/create", UserService.create);

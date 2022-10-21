@@ -52,6 +52,10 @@ const UserService = {
     await UserRepository.update(req.user.id, data.value);
     return res.json({ message: "User updated successfully", status: 200 });
   },
+  async deleteSelf(req, res) {
+    await UserRepository.delete(req.user.id);
+    return res.json({ message: "User deleted successfully", status: 200 });
+  },
 };
 
 module.exports = UserService;
