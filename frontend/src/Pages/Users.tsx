@@ -1,15 +1,4 @@
-import {
-  Button,
-  Table,
-  TableCaption,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
+import { Button, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import Card from "../Components/Card";
 import Template from "../Components/Template";
 import { FiEye, FiEdit, FiTrash } from "react-icons/fi";
