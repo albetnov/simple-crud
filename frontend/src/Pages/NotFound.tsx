@@ -1,5 +1,5 @@
-import { Flex, Link, Text } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Flex, Text } from "@chakra-ui/react";
+import DomLink from "../Components/DomLink";
 
 export default function NotFound() {
   return (
@@ -10,7 +10,7 @@ export default function NotFound() {
       <Text color="gray.800" fontSize="xl">
         Not Found
       </Text>
-      <Link
+      <DomLink
         to="/"
         p={3}
         rounded="lg"
@@ -18,7 +18,6 @@ export default function NotFound() {
         fontWeight="semibold"
         bg="blue.200"
         color="blue.700"
-        as={RouterLink}
         _hover={{
           bg: "blue.300",
           color: "blue.800",
@@ -28,7 +27,7 @@ export default function NotFound() {
         }}
       >
         Go Home
-      </Link>
+      </DomLink>
     </Flex>
   );
 }
