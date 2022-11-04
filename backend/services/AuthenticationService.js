@@ -9,12 +9,13 @@ const DataNotFound = require("../responses/DataNotFound");
 const AuthenticationService = {
   async login(req, res) {
     const data = await interceptRequest(req, res, LoginRequest);
-    const find = await UserRepository.findByUsername(data.value.username);
 
     if (data.hasError) {
       return data.error;
     }
 
+    const find = await UserRepository.findByUsername(data.value.username);
+    
     if (!find) {
       return DataNotFound(res);
     }

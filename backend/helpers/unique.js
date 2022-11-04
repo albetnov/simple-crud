@@ -10,7 +10,8 @@ class Unique {
 
   async skipSelf(id) {
     const find = await this.repository(this.fieldName);
-    if (parseInt(find.id) === parseInt(id)) {
+
+    if (find && parseInt(find.id) === parseInt(id)) {
       this.intentional = true;
     }
     return this;
