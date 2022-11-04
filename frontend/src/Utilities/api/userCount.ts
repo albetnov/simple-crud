@@ -1,4 +1,4 @@
-import { BASE_URL, getAuthHeader } from "../Api";
+import { makeFetch } from "../Api";
 
 interface UserCountData {
   message: string;
@@ -8,18 +8,11 @@ interface UserCountData {
 type UserCountResponse = false | UserCountData;
 
 export const userCount = async (): Promise<UserCountResponse> => {
-  try {
-    const response = await fetch(`${BASE_URL}/users/all?count=true`, {
-      headers: getAuthHeader(localStorage.getItem("token") || ""),
-    });
+  const fetch = await makeFetch("/users/all?count=true", { localToken: true });
 
-    if (!response.ok) {
-      throw Error("Failed to fetch /all?count=true endpoint.");
-    }
-
-    return await response.json();
-  } catch (err: any) {
-    console.log(err.message);
+  if (!fetch) {
     return false;
   }
+
+  return await fetch.json();
 };

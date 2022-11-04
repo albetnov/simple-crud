@@ -1,10 +1,20 @@
 import { Alert, AlertIcon } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function useAlert(timeout: number = 2000) {
+type AlertVariants = "success" | "info" | "warning" | "error";
+
+interface SetAlertProps {
+  message: string;
+  variant: AlertVariants;
+  showAlert: boolean;
+}
+
+type UseAlert = [React.ReactNode, (options: SetAlertProps) => void];
+
+export default function useAlert(timeout: number = 2000): UseAlert {
   const [showAlert, setShowAlert] = useState(false);
   const [message, setMessage] = useState("");
-  const [variant, setVariant] = useState<"success" | "info" | "warning" | "error">("success");
+  const [variant, setVariant] = useState<AlertVariants>("success");
 
   useEffect(() => {
     if (showAlert && timeout !== 0) {
@@ -25,5 +35,11 @@ export default function useAlert(timeout: number = 2000) {
     );
   }
 
-  return { setShowAlert, setMessage, element, setVariant };
+  const setAlert = ({ message, variant, showAlert }: SetAlertProps) => {
+    setShowAlert(showAlert);
+    setMessage(message);
+    setVariant(variant);
+  };
+
+  return [element, setAlert];
 }

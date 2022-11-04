@@ -1,4 +1,4 @@
-import { ApiResponse, BASE_URL, checkForValidationError, MessageResponse } from "../Api";
+import { ApiResponse, makePost, CommonApiResponse } from "../Api";
 
 export interface UserRegistration {
   username: string;
@@ -8,32 +8,12 @@ export interface UserRegistration {
   roles: "admin" | "user";
 }
 
-export const registerUser = async (
-  fields: UserRegistration
-): Promise<ApiResponse<MessageResponse>> => {
+type RegisterUser = Promise<ApiResponse<CommonApiResponse<null> | null>>;
+
+export const registerUser = async (fields: UserRegistration): RegisterUser => {
   console.log(fields);
-  try {
-    const res = await fetch(`${BASE_URL}/register`, {
-      method: "POST",
-      body: JSON.stringify(fields),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const validationError = await checkForValidationError(res);
-
-    if (validationError) {
-      return validationError;
-    }
-
-    if (!res.ok) {
-      throw Error("Failed to register user");
-    }
-
-    return { json: await res.json(), code: 200 };
-  } catch (err: any) {
-    console.log(err.message);
-    return { code: 500 };
-  }
+  return await makePost<UserRegistration>("/register", {
+    fields,
+    failedMessage: "Failed to register user",
+  });
 };

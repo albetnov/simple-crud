@@ -7,8 +7,7 @@ import TextLink from "../../Components/TextLink";
 import useAlert from "../../Hooks/useAlert";
 import useAuthBg from "../../Hooks/useAuthBg";
 import { AuthAction } from "../../Store/AuthSlice";
-import { ResError, ResJson } from "../../Utilities/Api";
-import { LoginResponse, loginUser, UserLogin } from "../../Utilities/api/login";
+import { loginUser, UserLogin } from "../../Utilities/api/login";
 import AuthTemplate from "./AuthTemplate";
 
 export default function Login() {
@@ -17,7 +16,7 @@ export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { element, setMessage, setShowAlert, setVariant } = useAlert();
+  const [element, setAlert] = useAlert();
 
   const [fields, setFields] = useState<UserLogin>({
     username: "",
@@ -38,19 +37,19 @@ export default function Login() {
       console.log(res);
 
       if (res.code !== 200) {
-        setShowAlert(true);
-        setVariant("error");
-        const newRes = res as ResError;
-        setMessage(`${newRes.message} ${newRes.details}`);
+        setAlert({
+          showAlert: true,
+          variant: "error",
+          message: `${res.message} ${res.errors?.details}`,
+        });
         return;
       }
-      setShowAlert(true);
-      setVariant("success");
-      const newRes = res as ResJson<LoginResponse>;
-      setMessage(newRes.json.message);
-      dispatch(
-        AuthAction.login({ token: newRes.json.token, time: newRes.json.expiresIn.toString() })
-      );
+      setAlert({
+        showAlert: true,
+        variant: "success",
+        message: res.json!.message,
+      });
+      dispatch(AuthAction.login({ token: res.json!.token, time: res.json!.expiresIn.toString() }));
       navigate("/");
     } catch (err: any) {
       console.log(err);

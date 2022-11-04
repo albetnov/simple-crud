@@ -5,14 +5,13 @@ import Input from "../../Components/Input";
 import TextLink from "../../Components/TextLink";
 import useAlert from "../../Hooks/useAlert";
 import useAuthBg from "../../Hooks/useAuthBg";
-import { MessageResponse, ResError, ResJson } from "../../Utilities/Api";
 import { registerUser, UserRegistration } from "../../Utilities/api/register";
 import AuthTemplate from "./AuthTemplate";
 
 export default function Register() {
   useAuthBg();
 
-  const { setShowAlert, setMessage, element, setVariant } = useAlert(3000);
+  const [element, setAlert] = useAlert(3000);
 
   const [fields, setFields] = useState<UserRegistration>({
     username: "",
@@ -33,16 +32,18 @@ export default function Register() {
       const res = await registerUser(fields);
       console.log(res);
       if (res.code !== 200) {
-        setShowAlert(true);
-        setVariant("error");
-        const newRes = res as ResError;
-        setMessage(`${newRes.message} ${newRes.details}`);
+        setAlert({
+          showAlert: true,
+          message: `${res.message} ${res.errors?.details}`,
+          variant: "error",
+        });
         return;
       }
-      setShowAlert(true);
-      setVariant("success");
-      const newRes = res as ResJson<MessageResponse>;
-      setMessage(newRes.json.message);
+      setAlert({
+        showAlert: true,
+        message: res.json!.message,
+        variant: "success",
+      });
       navigate("/auth/login");
     } catch (err: any) {
       console.log(err.message);
