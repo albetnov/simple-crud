@@ -43,7 +43,7 @@ const AuthenticationService = {
       return data.error;
     }
 
-    if (data.value.roles !== "admin" || data.value.roles !== "user") {
+    if (data.value.roles !== "admin" && data.value.roles !== "user") {
       return res.status(400).json({
         message: "Role must be admin or user!",
         status: 400,
