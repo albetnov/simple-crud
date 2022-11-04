@@ -14,6 +14,5 @@ export const registerUser = async (fields: UserRegistration): RegisterUser => {
   console.log(fields);
   return await makePost<UserRegistration>("/register", {
     fields,
-    failedMessage: "Failed to register user",
   });
 };

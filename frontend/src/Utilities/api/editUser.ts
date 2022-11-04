@@ -3,10 +3,18 @@ import { CreateUser } from "./createUser";
 
 type EditUser = Promise<ApiResponse<CommonActionApiResponse | null>>;
 
-export const editUser = async (user: CreateUser, id: number): Promise<EditUser> => {
-  return await makePost<CreateUser>(`/users/edit/${id}`, {
+interface CreateUserWithoutPassword {
+  name: string;
+  roles: string;
+  username: string;
+}
+
+export type EditUserRequest = CreateUser | CreateUserWithoutPassword;
+
+export const editUser = async (user: EditUserRequest, id: number): Promise<EditUser> => {
+  return await makePost<EditUserRequest>(`/users/edit/${id}`, {
     localToken: true,
     fields: user,
-    failedMessage: "Failed to edit user",
+    method: "PUT",
   });
 };

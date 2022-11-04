@@ -13,7 +13,6 @@ type CreateUserResponse = Promise<ApiResponse<CommonActionApiResponse | null>>;
 export const createUser = async (fields: CreateUser): CreateUserResponse => {
   return await makePost<CreateUser>("/users/create", {
     localToken: true,
-    failedMessage: "Failed to create user",
     fields,
   });
 };

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 type AlertVariants = "success" | "info" | "warning" | "error";
 
-interface SetAlertProps {
+export interface SetAlertProps {
   message: string;
   variant: AlertVariants;
   showAlert: boolean;

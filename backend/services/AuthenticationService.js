@@ -15,7 +15,7 @@ const AuthenticationService = {
     }
 
     const find = await UserRepository.findByUsername(data.value.username);
-    
+
     if (!find) {
       return DataNotFound(res);
     }
@@ -35,6 +35,7 @@ const AuthenticationService = {
         roles: find.roles,
       }),
       expiresIn: date.setDate(date.getDate() + 7),
+      status: 200,
     });
   },
   async register(req, res) {
@@ -56,7 +57,7 @@ const AuthenticationService = {
 
     return res.json({
       message: "Registration Success!",
-      status: 200,
+      status: 201,
     });
   },
 };

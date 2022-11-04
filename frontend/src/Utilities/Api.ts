@@ -23,7 +23,7 @@ export const makeFetch = async (url: string, options: FetchOptions) => {
     const getAuth = getLocalAuthHeader(Boolean(options.localToken), options.token);
 
     if (getAuth) {
-      options.headers = { ...options.headers, Authorization: getAuth };
+      options.headers = { ...options.headers, Authorization: getAuth, Accept: "application/json" };
     }
 
     const response = await fetch(`${BASE_URL}${url}`, options);
@@ -57,6 +57,7 @@ export interface ApiResponse<T> {
 export interface CommonApiResponse<T> {
   message: string;
   data?: T;
+  status: number;
 }
 
 export interface CommonActionApiResponse {
@@ -82,25 +83,29 @@ export const checkForValidationError = async (
 };
 
 interface PostOptions<T> extends FetchOptions {
-  fields: T;
-  failedMessage: string;
+  fields?: T;
+  method?: "POST" | "PUT" | "PATCH" | "DELETE";
 }
 
 export const makePost = async <T>(url: string, options: PostOptions<T>) => {
   try {
     const getAuth = getLocalAuthHeader(Boolean(options.localToken), options.token);
 
+    options.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+
     if (getAuth) {
       options.headers = {
         ...options.headers,
-        "Content-Type": "application/json",
         Authorization: getAuth,
       };
     }
 
     const res = await fetch(`${BASE_URL}${url}`, {
-      method: "POST",
-      body: JSON.stringify(options.fields),
+      method: options.method || "POST",
+      body: options.fields ? JSON.stringify(options.fields) : null,
       headers: options.headers,
     });
 
@@ -110,13 +115,13 @@ export const makePost = async <T>(url: string, options: PostOptions<T>) => {
       return validationError;
     }
 
-    if (!res.ok) {
-      throw Error(options.failedMessage);
+    if (res.status > 399) {
+      throw Error((await res.json()).message);
     }
 
     return { json: await res.json(), code: 200 };
   } catch (err: any) {
     console.log(err.message);
-    return { code: 500 };
+    return { code: 500, message: err.message };
   }
 };

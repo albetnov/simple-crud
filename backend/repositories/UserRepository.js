@@ -23,6 +23,7 @@ const UserRepository = {
     });
   },
   async update(id, data) {
+    delete data.confirm_password;
     return await prisma.users.update({ where: { id: parseInt(id) }, data });
   },
   async delete(id) {

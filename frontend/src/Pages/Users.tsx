@@ -1,13 +1,5 @@
 import {
   Button,
-  ListItem,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Table,
   TableContainer,
   Tbody,
@@ -16,7 +8,6 @@ import {
   Th,
   Thead,
   Tr,
-  UnorderedList,
   useDisclosure,
 } from "@chakra-ui/react";
 import Card from "../Components/Card";
@@ -27,10 +18,13 @@ import { allUser, User } from "../Utilities/api/allUser";
 import { userDetail } from "../Utilities/api/userDetail";
 import useAlert from "../Hooks/useAlert";
 import ButtonLink from "../Components/ButtonLink";
+import UserDetailModal from "../Components/UserDetailModal";
+import UserDeleteModal from "../Components/UserDeleteModal";
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isDetailOpen, onOpen: onDetailOpen, onClose: onDetailClose } = useDisclosure();
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
   const [currentUser, setCurrentUser] = useState<User>();
   const [element, setAlert] = useAlert();
 
@@ -56,7 +50,12 @@ export default function Users() {
     }
 
     setCurrentUser(res.data);
-    onOpen();
+    onDetailOpen();
+  };
+
+  const openDeleteModal = (name: string, id: number) => {
+    setCurrentUser({ name, id, roles: "", username: "" });
+    onDeleteOpen();
   };
 
   return (
@@ -67,25 +66,8 @@ export default function Users() {
         <ButtonLink to="/users/new" colorScheme="blue" mt={3} leftIcon={<FiPlus />}>
           Create New User
         </ButtonLink>
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>User Detail | {currentUser?.name}</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <UnorderedList>
-                <ListItem>Name: {currentUser?.name}</ListItem>
-                <ListItem>Username: {currentUser?.username}</ListItem>
-                <ListItem>Role: {currentUser?.roles}</ListItem>
-              </UnorderedList>
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Close
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <UserDetailModal isOpen={isDetailOpen} onClose={onDetailClose} currentUser={currentUser} />
+        <UserDeleteModal isOpen={isDeleteOpen} onClose={onDeleteClose} currentUser={currentUser} />
         <TableContainer mx="auto" my={10} maxW="container.lg">
           <Table variant="simple">
             <Thead>
@@ -114,7 +96,11 @@ export default function Users() {
                       <ButtonLink to={`/users/edit/${item.id}`} colorScheme="blue" variant="ghost">
                         <FiEdit />
                       </ButtonLink>
-                      <Button colorScheme="red" variant="ghost">
+                      <Button
+                        onClick={() => openDeleteModal(item.name, item.id)}
+                        colorScheme="red"
+                        variant="ghost"
+                      >
                         <FiTrash />
                       </Button>
                     </Td>

@@ -31,7 +31,7 @@ export default function Register() {
       setIsLoading(true);
       const res = await registerUser(fields);
       console.log(res);
-      if (res.code !== 200) {
+      if (res.code === 422) {
         setAlert({
           showAlert: true,
           message: `${res.message} ${res.errors?.details}`,
@@ -39,6 +39,16 @@ export default function Register() {
         });
         return;
       }
+
+      if (res.code === 500) {
+        setAlert({
+          showAlert: true,
+          variant: "error",
+          message: res.message!,
+        });
+        return;
+      }
+
       setAlert({
         showAlert: true,
         message: res.json!.message,

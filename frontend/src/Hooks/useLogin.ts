@@ -22,6 +22,8 @@ export default function useLogin() {
         dispatch(AuthAction.login({ token, time }));
         const data = await me.json();
         dispatch(AuthAction.user(data));
+      } else {
+        dispatch(AuthAction.logout());
       }
     };
 

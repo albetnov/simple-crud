@@ -9,6 +9,7 @@ const UserService = {
     return res.json({
       message: "Showing user data",
       data,
+      status: 200,
     });
   },
   async create(req, res) {
@@ -59,13 +60,13 @@ const UserService = {
   async detail(req, res) {
     const { id } = req.params;
     const user = await UserRepository.findById(parseInt(id));
-    delete user.password;
 
-    return res.json({
-      message: "User Detail",
-      data: user,
-      status: 200,
-    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found", status: 404 });
+    }
+
+    delete user.password;
+    return res.json({ message: "User Detail", data: user, status: 200 });
   },
 };
 

@@ -36,7 +36,7 @@ export default function Login() {
       const res = await loginUser(fields);
       console.log(res);
 
-      if (res.code !== 200) {
+      if (res.code === 422) {
         setAlert({
           showAlert: true,
           variant: "error",
@@ -44,6 +44,16 @@ export default function Login() {
         });
         return;
       }
+
+      if (res.code === 500) {
+        setAlert({
+          showAlert: true,
+          variant: "error",
+          message: res.message!,
+        });
+        return;
+      }
+
       setAlert({
         showAlert: true,
         variant: "success",

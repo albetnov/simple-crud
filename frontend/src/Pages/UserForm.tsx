@@ -11,29 +11,31 @@ import {
 } from "@chakra-ui/react";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { FiArrowLeft, FiEdit, FiUserPlus } from "react-icons/fi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ButtonLink from "../Components/ButtonLink";
 import Card from "../Components/Card";
 import Template from "../Components/Template";
 import useAlert from "../Hooks/useAlert";
 import { User } from "../Utilities/api/allUser";
 import { createUser, CreateUser } from "../Utilities/api/createUser";
-import { editUser } from "../Utilities/api/editUser";
+import { editUser, EditUserRequest } from "../Utilities/api/editUser";
 import { userDetail } from "../Utilities/api/userDetail";
-import NotFound from "./NotFound";
 
 export default function UserForm() {
   const params = useParams();
 
   const [user, setUser] = useState<User | null>(null);
   const [isEdit, setIsEdit] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDetail = async () => {
       if (params.id) {
         const res = await userDetail(parseInt(params.id));
+        console.log(res);
+
         if (!res) {
-          return <NotFound />;
+          return navigate("/notfound");
         }
 
         setUser(res.data as User);
@@ -91,16 +93,18 @@ export default function UserForm() {
       let res;
 
       if (isEdit) {
+        let finalFields: EditUserRequest = {
+          ...fields,
+        };
         if (fields.password === "" || fields.confirm_password === "") {
-          delete fields.password;
-          delete fields.confirm_password;
+          finalFields = { name: fields.name, username: fields.username, roles: fields.roles };
         }
-        res = await editUser(fields, user!.id);
+        res = await editUser(finalFields, user!.id);
       } else {
         res = await createUser(fields);
       }
 
-      if (res.code !== 200) {
+      if (res.code === 422) {
         setAlert({
           showAlert: true,
           message: `${res.message} ${res.errors?.details}`,
@@ -108,6 +112,16 @@ export default function UserForm() {
         });
         return;
       }
+
+      if (res.code === 500) {
+        setAlert({
+          showAlert: true,
+          variant: "error",
+          message: res.message!,
+        });
+        return;
+      }
+
       setAlert({
         showAlert: true,
         variant: "success",
