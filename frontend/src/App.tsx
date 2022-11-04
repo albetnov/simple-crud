@@ -25,6 +25,10 @@ const App = createBrowserRouter([
         path: "users/new",
         element: <UserForm />,
       },
+      {
+        path: "users/edit/:id",
+        element: <UserForm />,
+      },
     ],
   },
   {

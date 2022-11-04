@@ -111,9 +111,9 @@ export default function Users() {
                       >
                         <FiEye />
                       </Button>
-                      <Button colorScheme="blue" variant="ghost">
+                      <ButtonLink to={`/users/edit/${item.id}`} colorScheme="blue" variant="ghost">
                         <FiEdit />
-                      </Button>
+                      </ButtonLink>
                       <Button colorScheme="red" variant="ghost">
                         <FiTrash />
                       </Button>

@@ -1,6 +1,17 @@
-import { Button, FormControl, FormLabel, Input, Select, SimpleGrid, Text } from "@chakra-ui/react";
-import { ChangeEvent, FormEvent, useState } from "react";
+import {
+  Alert,
+  AlertIcon,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { FiArrowLeft, FiEdit, FiUserPlus } from "react-icons/fi";
+import { useParams } from "react-router-dom";
 import ButtonLink from "../Components/ButtonLink";
 import Card from "../Components/Card";
 import Template from "../Components/Template";
@@ -8,13 +19,31 @@ import useAlert from "../Hooks/useAlert";
 import { User } from "../Utilities/api/allUser";
 import { createUser, CreateUser } from "../Utilities/api/createUser";
 import { editUser } from "../Utilities/api/editUser";
+import { userDetail } from "../Utilities/api/userDetail";
+import NotFound from "./NotFound";
 
-interface UserFormProps {
-  user?: User;
-}
+export default function UserForm() {
+  const params = useParams();
 
-export default function UserForm({ user }: UserFormProps) {
-  let initialFields = {
+  const [user, setUser] = useState<User | null>(null);
+  const [isEdit, setIsEdit] = useState(false);
+
+  useEffect(() => {
+    const fetchDetail = async () => {
+      if (params.id) {
+        const res = await userDetail(parseInt(params.id));
+        if (!res) {
+          return <NotFound />;
+        }
+
+        setUser(res.data as User);
+      }
+    };
+
+    fetchDetail();
+  }, [params.id]);
+
+  const initialFields = {
     username: "",
     roles: "user",
     confirm_password: "",
@@ -22,25 +51,28 @@ export default function UserForm({ user }: UserFormProps) {
     password: "",
   };
 
-  const isEdit = typeof user !== "undefined";
+  let text = isEdit ? "Edit" : "Create";
+  let actionIcon = isEdit ? <FiEdit /> : <FiUserPlus />;
 
-  if (isEdit) {
-    initialFields = {
-      username: user.username,
-      roles: user.roles,
-      name: user.name,
-      password: "",
-      confirm_password: "",
-    };
-  }
+  const [fields, setFields] = useState<CreateUser>(initialFields);
+
+  useEffect(() => {
+    if (user) {
+      setIsEdit(true);
+      setFields({
+        username: user.username,
+        roles: user.roles,
+        name: user.name,
+        password: "",
+        confirm_password: "",
+      });
+      text = isEdit ? "Edit" : "Create";
+      actionIcon = isEdit ? <FiEdit /> : <FiUserPlus />;
+    }
+  }, [user]);
 
   const [element, setAlert] = useAlert();
   const [isLoading, setIsLoading] = useState(false);
-  const [fields, setFields] = useState<CreateUser>(initialFields);
-
-  const text = isEdit ? "Edit" : "Create";
-
-  const actionIcon = isEdit ? <FiEdit /> : <FiUserPlus />;
 
   const inputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setFields((prev) => ({ ...prev, [event.target.name]: event.target.value }));
@@ -59,7 +91,11 @@ export default function UserForm({ user }: UserFormProps) {
       let res;
 
       if (isEdit) {
-        res = await editUser(fields, user.id);
+        if (fields.password === "" || fields.confirm_password === "") {
+          delete fields.password;
+          delete fields.confirm_password;
+        }
+        res = await editUser(fields, user!.id);
       } else {
         res = await createUser(fields);
       }
@@ -103,6 +139,12 @@ export default function UserForm({ user }: UserFormProps) {
                 value={fields.username}
               />
             </FormControl>
+            {isEdit && (
+              <Alert status="info">
+                <AlertIcon />
+                Leave empty if you don't want to change password.
+              </Alert>
+            )}
             <FormControl>
               <FormLabel>Password</FormLabel>
               <Input
