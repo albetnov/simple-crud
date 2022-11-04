@@ -1,6 +1,6 @@
 export const BASE_URL = "http://localhost:3000";
 
-const getAuthHeader = (token: string) => ({
+export const getAuthHeader = (token: string) => ({
   Authorization: "Bearer " + token,
 });
 

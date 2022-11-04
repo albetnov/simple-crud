@@ -7,6 +7,7 @@ interface UserType {
   roles: string;
   iat: number;
   exp: number;
+  name: string;
 }
 interface StateType {
   isLoggedIn: boolean;

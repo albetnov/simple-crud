@@ -1,0 +1,4 @@
+# make sure leftovers from other branch not getting pushed
+bootstrap/
+storage/
+.env/

@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import CheckForAuth from "./Components/CheckForAuth";
 import Login from "./Pages/Auth/Login";
+import Logout from "./Pages/Auth/Logout";
 import Register from "./Pages/Auth/Register";
 import Home from "./Pages/Home";
 import NotFound from "./Pages/NotFound";
@@ -38,6 +39,10 @@ const App = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/logout",
+    element: <Logout />,
   },
 ]);
 
