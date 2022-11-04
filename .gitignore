@@ -16,3 +16,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# ignore leftovers from other branch
+backend/
+frontend/

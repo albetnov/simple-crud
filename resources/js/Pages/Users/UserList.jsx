@@ -12,29 +12,47 @@ import Thead from "@/Components/Thead";
 import Tr from "@/Components/Tr";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/inertia-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EditUserModal from "../../Components/EditUserModal";
 
 export default function UserList({ users, auth, errors }) {
     const [modalDetail, setModalDetail] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalNew, setModalNew] = useState(false);
-    const [currentUser, setCurrentUser] = useState({ name: '', email: '', role: '' });
+    const [currentUser, setCurrentUser] = useState({
+        name: "",
+        email: "",
+        role: "",
+    });
+
+    const [alert, setAlert] = useState(false);
+
+    useEffect(() => {
+        if (Object.keys(errors).length > 0) {
+            const data = [];
+
+            for (const item in errors) {
+                data.push(errors[item]);
+            }
+
+            setAlert(data);
+        }
+    }, [errors]);
 
     const fetchUserDetail = async (id) => {
-        const result = await fetch(route('users.show', id), {
-            headers: { Accept: "application/json" }
+        const result = await fetch(route("users.show", id), {
+            headers: { Accept: "application/json" },
         });
 
         const response = await result.json();
         setCurrentUser(response);
-    }
+    };
 
     const showUserDetail = async (event, id) => {
         await fetchUserDetail(id);
 
         setModalDetail(true);
-    }
+    };
 
     const editButtonHandler = async (event, id) => {
         event.stopPropagation();
@@ -42,11 +60,11 @@ export default function UserList({ users, auth, errors }) {
         await fetchUserDetail(id);
 
         setModalEdit(true);
-    }
+    };
 
     const newButtonHandler = () => {
         setModalNew(true);
-    }
+    };
 
     return (
         <AuthenticatedLayout
@@ -64,11 +82,25 @@ export default function UserList({ users, auth, errors }) {
                         <li>Role: {currentUser.role}</li>
                     </ul>
 
-                    <button className="py-2 px-4 bg-blue-400 rounded-lg text-white mt-3 hover:bg-blue-600 active:opacity-80" onClick={() => setModalDetail(false)}>Close Modal</button>
+                    <button
+                        className="py-2 px-4 bg-blue-400 rounded-lg text-white mt-3 hover:bg-blue-600 active:opacity-80"
+                        onClick={() => setModalDetail(false)}
+                    >
+                        Close Modal
+                    </button>
                 </Modal>
             </ModalOverlay>
-            <EditUserModal modal={modalEdit} user={currentUser} modalHandler={setModalEdit} />
-            <CreateUserModal modal={modalNew} modalHandler={setModalNew} />
+            <EditUserModal
+                modal={modalEdit}
+                user={currentUser}
+                modalHandler={setModalEdit}
+                alertMsg={alert}
+            />
+            <CreateUserModal
+                modal={modalNew}
+                modalHandler={setModalNew}
+                alertMsg={alert}
+            />
             <Container>
                 <Card>
                     <h1 className="text-2xl mt-2 mb-7">Users List</h1>
@@ -85,21 +117,50 @@ export default function UserList({ users, auth, errors }) {
                         <tbody>
                             {users.data.map((user, i) => {
                                 return (
-                                    <Tr key={user.id} onClick={(e) => showUserDetail(e, user.id)}>
+                                    <Tr
+                                        key={user.id}
+                                        onClick={(e) =>
+                                            showUserDetail(e, user.id)
+                                        }
+                                    >
                                         <Td>{++i}</Td>
                                         <Td>{user.name}</Td>
                                         <Td>{user.role}</Td>
                                         <Td>
-                                            <Button className="mr-3" type="button" onClick={(e) => editButtonHandler(e, user.id)}>Edit</Button>
-                                            <ButtonLink href={route('users.destroy', user.id)} method="delete" extends="bg-red-400 hover:bg-red-500 active:opacity-80" type="submit" onClick={e => e.stopPropagation()}>Delete</ButtonLink>
+                                            <Button
+                                                className="mr-3"
+                                                type="button"
+                                                onClick={(e) =>
+                                                    editButtonHandler(
+                                                        e,
+                                                        user.id
+                                                    )
+                                                }
+                                            >
+                                                Edit
+                                            </Button>
+                                            <ButtonLink
+                                                href={route(
+                                                    "users.destroy",
+                                                    user.id
+                                                )}
+                                                method="delete"
+                                                extends="bg-red-400 hover:bg-red-500 active:opacity-80"
+                                                type="submit"
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                            >
+                                                Delete
+                                            </ButtonLink>
                                         </Td>
                                     </Tr>
-                                )
+                                );
                             })}
                         </tbody>
                     </TableResponsive>
                 </Card>
             </Container>
-        </AuthenticatedLayout >
-    )
+        </AuthenticatedLayout>
+    );
 }
