@@ -5,6 +5,7 @@ import Logout from "./Pages/Auth/Logout";
 import Register from "./Pages/Auth/Register";
 import Home from "./Pages/Home";
 import NotFound from "./Pages/NotFound";
+import UserForm from "./Pages/UserForm";
 import Users from "./Pages/Users";
 
 const App = createBrowserRouter([
@@ -19,6 +20,10 @@ const App = createBrowserRouter([
       {
         path: "users",
         element: <Users />,
+      },
+      {
+        path: "users/new",
+        element: <UserForm />,
       },
     ],
   },

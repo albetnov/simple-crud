@@ -59,6 +59,11 @@ export interface CommonApiResponse<T> {
   data?: T;
 }
 
+export interface CommonActionApiResponse {
+  message: string;
+  status: number;
+}
+
 export const checkForValidationError = async (
   res: Response
 ): Promise<ApiResponse<null> | false> => {
@@ -86,15 +91,17 @@ export const makePost = async <T>(url: string, options: PostOptions<T>) => {
     const getAuth = getLocalAuthHeader(Boolean(options.localToken), options.token);
 
     if (getAuth) {
-      options.headers = { ...options.headers, Authorization: getAuth };
+      options.headers = {
+        ...options.headers,
+        "Content-Type": "application/json",
+        Authorization: getAuth,
+      };
     }
 
     const res = await fetch(`${BASE_URL}${url}`, {
       method: "POST",
       body: JSON.stringify(options.fields),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: options.headers,
     });
 
     const validationError = await checkForValidationError(res);

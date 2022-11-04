@@ -21,11 +21,12 @@ import {
 } from "@chakra-ui/react";
 import Card from "../Components/Card";
 import Template from "../Components/Template";
-import { FiEye, FiEdit, FiTrash } from "react-icons/fi";
+import { FiEye, FiEdit, FiTrash, FiPlus } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { allUser, User } from "../Utilities/api/allUser";
 import { userDetail } from "../Utilities/api/userDetail";
 import useAlert from "../Hooks/useAlert";
+import ButtonLink from "../Components/ButtonLink";
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>();
@@ -63,9 +64,9 @@ export default function Users() {
       <Card>
         <Text fontSize="2xl">Users List</Text>
         {element}
-        <Button colorScheme="blue" mt={3}>
+        <ButtonLink to="/users/new" colorScheme="blue" mt={3} leftIcon={<FiPlus />}>
           Create New User
-        </Button>
+        </ButtonLink>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
