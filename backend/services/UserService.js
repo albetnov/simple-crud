@@ -56,6 +56,17 @@ const UserService = {
     await UserRepository.delete(req.user.id);
     return res.json({ message: "User deleted successfully", status: 200 });
   },
+  async detail(req, res) {
+    const { id } = req.params;
+    const user = await UserRepository.findById(parseInt(id));
+    delete user.password;
+
+    return res.json({
+      message: "User Detail",
+      data: user,
+      status: 200,
+    });
+  },
 };
 
 module.exports = UserService;

@@ -13,5 +13,6 @@ router.get("/all", UserService.index);
 router.post("/create", UserService.create);
 router.put("/edit/:id", UserService.edit);
 router.delete("/delete/:id", UserService.delete);
+router.get("/:id", UserService.detail);
 
 module.exports = router;
