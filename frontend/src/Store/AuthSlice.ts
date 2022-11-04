@@ -15,6 +15,11 @@ interface StateType {
 
 const initialState: StateType = { isLoggedIn: false, user: null };
 
+interface LoginPayload {
+  token: string;
+  time: string;
+}
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -22,12 +27,14 @@ const authSlice = createSlice({
     user(state, action: { payload: UserType }) {
       state.user = action.payload;
     },
-    login(state, action: { payload: string }) {
-      localStorage.setItem("token", action.payload);
+    login(state, action: { payload: LoginPayload }) {
+      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("expiresIn", action.payload.time);
       state.isLoggedIn = true;
     },
     logout(state) {
       localStorage.removeItem("token");
+      localStorage.removeItem("expiresIn");
       state.isLoggedIn = false;
     },
   },

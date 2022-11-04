@@ -8,7 +8,7 @@ export default function CheckForAuth({ inverse = false }) {
   const authed = useSelector((state: StoreState) => state.isLoggedIn);
 
   if (inverse && authed) {
-    return <Navigate to="/home" />;
+    return <Navigate to="/" />;
   } else if (!inverse && !authed) {
     return <Navigate to="/auth/login" />;
   }
